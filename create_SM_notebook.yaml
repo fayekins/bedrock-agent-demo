@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: 'Creates a SageMaker Notebook with IAM role, and downloads a Git repo'
+Resources:
+  SMExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: "SageMakerExecutionRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - sagemaker.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: smrolepolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                - sagemaker:*
+                - s3:*
+                - lambda:*
+                - bedrock:*
+                - ecr:*
+                - dynamodb:*
+                - iam:*
+                Resource: '*'              
+  CodeRepository:
+    Type: AWS::SageMaker::CodeRepository
+    Properties:
+      GitConfig:
+          RepositoryUrl: https://github.com/pluralsight-cloud/amazon-bedrock-building-genai-applications
+  NotebookInstance:
+    Type: AWS::SageMaker::NotebookInstance
+    Properties:
+      NotebookInstanceName: my-notebook
+      PlatformIdentifier: notebook-al2-v2
+      InstanceType: ml.t3.medium
+      RoleArn: !GetAtt SMExecutionRole.Arn
+      DefaultCodeRepository: !GetAtt CodeRepository.CodeRepositoryName    
+Outputs:
+  SageMakerNotebookURL:
+    Description: SageMaker Notebook Instance
+    Value: !Join
+      - ''
+      - - !Sub 'https://console.aws.amazon.com/sagemaker/home?region=${AWS::Region}#/notebook-instances/openNotebook/'
+        - !GetAtt NotebookInstance.NotebookInstanceName
+        - '?view=classic'  
