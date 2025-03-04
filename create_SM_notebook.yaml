@@ -34,7 +34,7 @@ Resources:
     Type: AWS::SageMaker::CodeRepository
     Properties:
       GitConfig:
-          RepositoryUrl: https://github.com/pluralsight-cloud/amazon-bedrock-building-genai-applications
+          RepositoryUrl: https://github.com/fayekins/bedrock-agent-demo
   NotebookInstance:
     Type: AWS::SageMaker::NotebookInstance
     Properties:
