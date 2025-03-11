@@ -22,11 +22,8 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                - sagemaker:*
-                - s3:*
                 - lambda:*
                 - bedrock:*
-                - ecr:*
                 - dynamodb:*
                 - iam:*
                 Resource: '*'              
